@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Contatos pessoais</title>
+
+  <link rel="stylesheet" media="screen" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="page-header">
+      <h3 id="title"></h3>
+    </div>
+
+    <span id="alert"></span>
+
+    <div class="well">
+      <h4>Adicionar contato</h4>
+      <form id="formAgenda" class="row" role="form" onsubmit="return addContato();">
+
+        <div class="form-group col-md-4">
+          <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome completo">
+        </div>
+
+        <div class="form-group col-md-3">
+          <input type="email" class="form-control" id="email" name="email" placeholder="E-mail">
+        </div>
+
+        <div class="form-group col-md-2">
+          <input type="text" class="form-control" id="telefone" name="telefone" placeholder="Telefone">
+        </div>
+
+        <div class="form-group col-md-2">
+          <input type="text" class="form-control" id="website" name="website" placeholder="Website">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Adicionar</button>
+      </form>
+
+    </div>
+
+    <hr>
+    <h4>Lista de contatos</h4>
+
+    <table class="table table-hover table-striped">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Telefone</th>
+          <th>Website</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody id="contatos"></tbody>
+    </table>
+
+  </div>
+
+  <script type="text/javascript">
+  // 1 – Crie um JSON para ser a referencia do objeto agenda
+  // 2 – No objeto agenda coloque um atributo chamado contatos que guarda um array de objetos Contato
+  // 3 – Crie um construtor novo com uma função, e o chame de Contato.
+  // 4 – O objeto Contato deve conter nome, endereço, telefone, e-mail e pagina (website pessoal).
+  // 5 – Para finalizar crie dois métodos para adicionar novos contatos, e um para remover um contato.
+
+  var alert = document.getElementById('alert');
+
+  var Agenda = {
+    title: "Contatos pessoais",
+    contatos: [],
+    adicionar: function(contato) {
+      if(contato.nome && contato.telefone && contato.email) {
+        this.contatos.push(contato);
+        alert.innerHTML = '<div class="alert alert-success">Contato adicionado com sucesso!</div>';
+      }
+      else {
+        alert.innerHTML = '<div class="alert alert-danger">Erro ao adicionar o contato!</div>';
+      }
+    },
+    listar: function(){
+      var list = document.getElementById('contatos');
+      var item = '';
+
+      for(i in this.contatos) {
+        var contato = this.contatos[i];
+
+        item += '<tr>';
+        item += '<td>'+ contato.nome +'</td>';
+        item += '<td>'+ contato.telefone +'</td>';
+        item += '<td>'+ contato.email +'</td>';
+
+        item += '<td> ';
+        if(contato.website) {
+          item += '<a href="' + contato.website + '">' + contato.website + '</a>';
+        }
+        item += '</td>';
+
+        item += '<td> ';
+        item += ' <a href="#" onclick="Agenda.remover(\''+ contato.nome +'\');" class="btn btn-success btn-xs pull-right"><i class="glyphicon glyphicon-trash"></i></a>';
+        item += '</td>';
+        item += '</tr>';
+
+      }
+
+      list.innerHTML = item;
+    },
+    remover: function(nome) {
+      for(i in this.contatos) {
+        var contato = this.contatos[i];
+        if(contato.nome === nome) {
+          this.contatos.splice(i, 1);
+          alert.innerHTML = '<div class="alert alert-info">Contato <strong>'+contato.nome+'</strong> foi removido da sua agenda.</div>';
+          Agenda.listar();
+          return true;
+        }
+      }
+      return false;
+    }
+  };
+
+  var title = document.getElementById("title");
+  title.innerHTML = Agenda.title;
+
+  function addContato() {
+    var nome     = document.getElementById("nome").value;
+    var email    = document.getElementById("email").value;
+    var telefone = document.getElementById("telefone").value;
+    var website  = document.getElementById("website").value;
+
+    Agenda.adicionar({
+      nome: nome,
+      telefone: email,
+      email: telefone,
+      website: website
+    });
+
+    Agenda.listar();
+    return false;
+  }
+</script>
+</body>
+</html>
